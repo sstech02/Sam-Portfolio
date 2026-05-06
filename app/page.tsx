@@ -365,9 +365,11 @@ export default function Home () {
           <div className='about-content'>
             <h2 className='about-heading'>About Me</h2>
             <p className='about-bio'>
-              I am a web developer focused on building clean, responsive user
-              interfaces, and practical web apps. I enjoy learning new tools,
-              and turning ideas into polished experiences.
+              I&apos;m passionate about web development and have a strong eye
+              for design. My primary focus is front-end development, and I also
+              have experience with back-end technologies such as JavaScript,
+              TypeScript, and Node.js. I&apos;m continuously learning and
+              growing toward becoming a full-stack developer.
             </p>
             <ul className='about-skills' aria-label='Skills'>
               {aboutSkills.map(skill => (
