@@ -42,7 +42,7 @@ const projects: Project[] = [
   {
     title: 'Netflix Clone',
     description:
-      'A recreation of the Netflix UI using Vite, showcasing responsive design and dynamic content rendering. Movies displayed using the TMDB API)',
+      'A recreation of the Netflix UI using Vite, showcasing responsive design and dynamic content rendering. Movies displayed using the TMDB API',
     tech: ['Vite', 'HTML', 'CSS', 'JavaScript'],
     link: 'https://netflix-clone-ten-iota-12.vercel.app/',
     screenshot: Netflixclone
@@ -71,14 +71,27 @@ const socialLinks = [
 ] as const
 
 const aboutSkills = [
-  'JavaScript',
-  'TypeScript',
-  'React',
-  'Next.js',
-  'HTML',
-  'CSS',
-  'Tailwind CSS',
-  'Firebase'
+  { label: 'JavaScript', iconClassName: 'fa-brands fa-js' },
+  { label: 'TypeScript', iconClassName: 'fa-solid fa-code' },
+  { label: 'React', iconClassName: 'fa-brands fa-react' },
+  { label: 'Next.js', iconClassName: 'fa-solid fa-forward' },
+  { label: 'HTML', iconClassName: 'fa-brands fa-html5' },
+  { label: 'CSS', iconClassName: 'fa-brands fa-css3-alt' },
+  { label: 'Tailwind CSS', iconClassName: 'fa-solid fa-wind' },
+  { label: 'Firebase', iconClassName: 'fa-solid fa-fire' }
+]
+
+const backgroundTextArtWords = [
+  'BUILD',
+  'CREATE',
+  'DESIGN',
+  'CODE',
+  'SHIP',
+  'UX',
+  'UI',
+  'DEVELOP',
+  'DEBUG',
+  'IMPROVE'
 ]
 
 interface ContactFormValues {
@@ -168,6 +181,10 @@ export default function Home () {
       ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const handleBackToTopClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   const handleContactFormChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -243,6 +260,35 @@ export default function Home () {
 
   return (
     <div className={`page-wrapper ${isDarkMode ? 'dark-mode' : ''}`}>
+      <div className='bg-text-art' aria-hidden='true'>
+        {backgroundTextArtWords.map((word, index) => {
+          // 4% -> 76% keeps the staircase visible from top-left to bottom-right.
+          const progress =
+            index / Math.max(backgroundTextArtWords.length - 1, 1)
+          const positionPercent = 4 + progress * 72
+          const shimmerDuration = (5.6 + ((index * 29) % 11) * 0.52).toFixed(2)
+          const shimmerDelay = (((index * 47) % 23) * 0.31).toFixed(2)
+          const shimmerHue = (index * 73 + 47) % 360
+
+          return (
+            <span
+              key={`${word}-${index}`}
+              className='bg-text-art-word'
+              style={{
+                left: `${positionPercent}%`,
+                top: `${positionPercent}%`,
+                color: `hsl(${shimmerHue} 84% 60% / ${
+                  isDarkMode ? 0.44 : 0.3
+                })`,
+                animationDelay: `${index * 0.7}s, ${shimmerDelay}s`,
+                animationDuration: `10s, ${shimmerDuration}s`
+              }}
+            >
+              {word}
+            </span>
+          )
+        })}
+      </div>
       {/* Header */}
       <header className='site-header'>
         <div className='header-inner'>
@@ -320,13 +366,17 @@ export default function Home () {
             <h2 className='about-heading'>About Me</h2>
             <p className='about-bio'>
               I am a web developer focused on building clean, responsive user
-              interfaces and practical web apps. I enjoy learning new tools, and
-              turning ideas into polished experiences.
+              interfaces, and practical web apps. I enjoy learning new tools,
+              and turning ideas into polished experiences.
             </p>
             <ul className='about-skills' aria-label='Skills'>
               {aboutSkills.map(skill => (
-                <li key={skill} className='about-skill-item'>
-                  {skill}
+                <li key={skill.label} className='about-skill-item'>
+                  <i
+                    className={`about-skill-icon ${skill.iconClassName}`}
+                    aria-hidden='true'
+                  ></i>
+                  <span>{skill.label}</span>
                 </li>
               ))}
             </ul>
@@ -535,6 +585,17 @@ export default function Home () {
                 ))}
               </ul>
             </nav>
+            <button
+              type='button'
+              className='back-to-top-button'
+              onClick={handleBackToTopClick}
+              aria-label='Back to top'
+            >
+              <span className='back-to-top-icon' aria-hidden='true'>
+                ↑
+              </span>
+              <span>Back to Top</span>
+            </button>
           </div>
         </div>
       </footer>
