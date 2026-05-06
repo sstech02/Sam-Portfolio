@@ -1,314 +1,543 @@
 'use client'
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+  type MouseEvent
+} from 'react'
+import Image from 'next/image'
+import type { StaticImageData } from 'next/image'
+import profilepic from '../app/assets/SamuelSchillprofilepic.jpg'
+import SaminternshipV2 from '../app/assets/SaminternshipV2.png'
+import Netflixclone from '../app/assets/Netflixclone.png'
+import Ultraverse from '../app/assets/Ultraverse.png'
+// Project data for the projects grid
+interface Project {
+  title: string
+  description: string
+  tech: string[]
+  link: string
+  screenshot: string | StaticImageData
+}
 
-/**
- * MODULE 5: Final Project - Portfolio Website
- *
- * This is your capstone project! You'll build a complete personal portfolio
- * website using everything you've learned:
- * - Agent Mode for scaffolding large sections
- * - Edit Mode for surgical refinements
- * - Ask Mode for guidance and improvements
- * - Your rules for consistent styling
- *
- * Follow the step-by-step instructions marked below.
- */
+const projects: Project[] = [
+  {
+    title: 'Summarist',
+    description:
+      'A book summary site that includes a user-friendly interface, dynamically fetched API rendering, and responsive design. Features include login functionality (login, signup, reset password) with Google authentication and guest login included. Users can become premium members to access premium book audio (monthly and yearly). Responsive design and skeleton loading states are implemented for a seamless user experience.',
+    tech: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Firebase', 'Stripe'],
+    link: 'https://sam-internship2.vercel.app/',
+    screenshot: SaminternshipV2
+  },
+  {
+    title: 'Ultraverse',
+    description:
+      'A mock NFT marketplace built using React. Features include a movable/scrollable carousel, onscrolling animations, dynamically rendered APIs, responsiveness, and skeleton loading states.',
+    tech: ['HTML', 'CSS', 'JavaScript', 'React'],
+    link: 'https://sam-internship-psi.vercel.app/',
+    screenshot: Ultraverse
+  },
+  {
+    title: 'Netflix Clone',
+    description:
+      'A recreation of the Netflix UI using Vite, showcasing responsive design and dynamic content rendering. Movies displayed using the TMDB API)',
+    tech: ['Vite', 'HTML', 'CSS', 'JavaScript'],
+    link: 'https://netflix-clone-ten-iota-12.vercel.app/',
+    screenshot: Netflixclone
+  }
+]
+
+// Navigation links
+const navLinks = ['About', 'Projects', 'Contact']
+
+const socialLinks = [
+  {
+    label: 'GitHub',
+    href: 'https://github.com/sstech02',
+    ariaLabel: 'GitHub profile'
+  },
+  {
+    label: 'LinkedIn',
+    href: 'https://www.linkedin.com/in/samuel-schill-017b3826a/',
+    ariaLabel: 'LinkedIn profile'
+  },
+  {
+    label: 'Twitter',
+    href: 'https://x.com/sstech02',
+    ariaLabel: 'Twitter profile'
+  }
+] as const
+
+const aboutSkills = [
+  'JavaScript',
+  'TypeScript',
+  'React',
+  'Next.js',
+  'HTML',
+  'CSS',
+  'Tailwind CSS',
+  'Firebase'
+]
+
+interface ContactFormValues {
+  name: string
+  email: string
+  message: string
+}
+
+interface ContactFormErrors {
+  name?: string
+  email?: string
+  message?: string
+}
+
+type ContactFormStatusType = '' | 'success' | 'error'
 
 export default function Home () {
+  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [activeSocialIndex, setActiveSocialIndex] = useState<number | null>(
+    null
+  )
+  const contactAnimationTimeoutsRef = useRef<
+    Array<ReturnType<typeof setTimeout>>
+  >([])
+  const [contactFormValues, setContactFormValues] = useState<ContactFormValues>(
+    {
+      name: '',
+      email: '',
+      message: ''
+    }
+  )
+  const [contactFormErrors, setContactFormErrors] = useState<ContactFormErrors>(
+    {}
+  )
+  const [contactFormStatus, setContactFormStatus] = useState('')
+  const [contactFormStatusType, setContactFormStatusType] =
+    useState<ContactFormStatusType>('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [imagesLoaded, setImagesLoaded] = useState<Set<string>>(new Set())
+
+  const handleImageLoad = (projectTitle: string) => {
+    setImagesLoaded(prev => new Set(prev).add(projectTitle))
+  }
+
+  const clearContactAnimationTimeouts = () => {
+    contactAnimationTimeoutsRef.current.forEach(timeoutId => {
+      clearTimeout(timeoutId)
+    })
+    contactAnimationTimeoutsRef.current = []
+  }
+
+  useEffect(() => {
+    return () => {
+      clearContactAnimationTimeouts()
+    }
+  }, [])
+
+  const handleContactClick = () => {
+    const initialDelay = 500
+    const stepDelay = 650
+
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+
+    clearContactAnimationTimeouts()
+    setActiveSocialIndex(null)
+
+    socialLinks.forEach((_, index) => {
+      const timeoutId = setTimeout(() => {
+        setActiveSocialIndex(index)
+      }, initialDelay + index * stepDelay)
+      contactAnimationTimeoutsRef.current.push(timeoutId)
+    })
+
+    const resetTimeoutId = setTimeout(() => {
+      setActiveSocialIndex(null)
+    }, initialDelay + socialLinks.length * stepDelay)
+    contactAnimationTimeoutsRef.current.push(resetTimeoutId)
+  }
+
+  const handleNavClick = (
+    event: MouseEvent<HTMLAnchorElement>,
+    sectionId: string
+  ) => {
+    event.preventDefault()
+    document
+      .getElementById(sectionId)
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  const handleContactFormChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = event.target
+    setContactFormValues(previousValues => ({
+      ...previousValues,
+      [name]: value
+    }))
+    setContactFormErrors(previousErrors => ({
+      ...previousErrors,
+      [name]: undefined
+    }))
+    setContactFormStatus('')
+    setContactFormStatusType('')
+  }
+
+  const isContactFormValid =
+    contactFormValues.name.trim().length > 0 &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactFormValues.email.trim()) &&
+    contactFormValues.message.trim().length > 0
+
+  const validateContactForm = () => {
+    const errors: ContactFormErrors = {}
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+    if (!contactFormValues.name.trim()) {
+      errors.name = 'Name is required.'
+    }
+
+    if (!contactFormValues.email.trim()) {
+      errors.email = 'Email is required.'
+    } else if (!emailPattern.test(contactFormValues.email.trim())) {
+      errors.email = 'Enter a valid email address.'
+    }
+
+    if (!contactFormValues.message.trim()) {
+      errors.message = 'Message is required.'
+    }
+
+    return errors
+  }
+
+  const handleContactFormSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const errors = validateContactForm()
+    setContactFormErrors(errors)
+
+    if (Object.keys(errors).length > 0) {
+      setContactFormStatus('Please fix the highlighted fields.')
+      setContactFormStatusType('error')
+      return
+    }
+
+    setIsSubmitting(true)
+
+    const { name, email, message } = contactFormValues
+    const mailtoSubject = encodeURIComponent(`Message from ${name.trim()}`)
+    const mailtoBody = encodeURIComponent(
+      `Name: ${name.trim()}\nEmail: ${email.trim()}\n\nMessage:\n${message.trim()}`
+    )
+
+    // Simulate a brief delay to show loading state
+    setTimeout(() => {
+      window.location.href = `mailto:samuelsch002@gmail.com?subject=${mailtoSubject}&body=${mailtoBody}`
+      setContactFormStatus(
+        'Success! Your message is ready in your email client.'
+      )
+      setContactFormStatusType('success')
+      setContactFormValues({ name: '', email: '', message: '' })
+      setIsSubmitting(false)
+    }, 600)
+  }
+
   return (
-    <div className='min-h-screen'>
-      {/* ==========================================
-       * 📋 PROJECT OVERVIEW
-       * ==========================================
-       *
-       * You'll build a portfolio with these sections:
-       * ✓ Header with navigation
-       * ✓ Hero section with name and tagline
-       * ✓ Projects grid with cards
-       * ✓ About section with bio and skills
-       * ✓ Contact form
-       * ✓ Footer with social links
-       *
-       * Use Agent Mode (Claude or Auto model) for big sections,
-       * then Edit Mode (Inline Chat) for refinements!
-       *
-       * ========================================== */}
+    <div className={`page-wrapper ${isDarkMode ? 'dark-mode' : ''}`}>
+      {/* Header */}
+      <header className='site-header'>
+        <div className='header-inner'>
+          <span className='site-logo'>Samuel Schill</span>
+          <nav aria-label='Main navigation'>
+            <ul className='nav-list'>
+              <li>
+                <button
+                  type='button'
+                  className='theme-toggle'
+                  onClick={() => setIsDarkMode(previousValue => !previousValue)}
+                  aria-label='Toggle dark mode'
+                  aria-pressed={isDarkMode}
+                >
+                  {isDarkMode ? 'Light' : 'Dark'}
+                </button>
+              </li>
+              {navLinks.map(link => (
+                <li key={link}>
+                  <a
+                    href={`#${link.toLowerCase()}`}
+                    className='nav-link'
+                    onClick={event => handleNavClick(event, link.toLowerCase())}
+                  >
+                    {link}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      </header>
 
-      {/* ==========================================
-       * 🎯 STEP 1: SCAFFOLD BASE LAYOUT
-       * ==========================================
-       *
-       * ✅ TODO: CREATE THE BASIC LAYOUT STRUCTURE
-       *
-       * Instructions:
-       * 1. Open Copilot Chat panel
-       * 2. Set model to Claude or Auto
-       * 3. Ask: "Create a portfolio layout with header, hero section,
-       *         projects grid, and footer"
-       * 4. Review the scaffolded structure
-       * 5. Accept if it has all four sections
-       *
-       * IMPORTANT: Replace this entire component with the generated layout!
-       *
-       * ========================================== */}
+      {/* Hero */}
+      <section className='hero-section'>
+        <div className='hero-avatar' aria-hidden='true'>
+          <Image
+            src={profilepic}
+            alt='Samuel Schill'
+            className='rounded-full'
+          />
+        </div>
+        <h1 className='hero-heading'>
+          <span className='waving-hand'>👋</span>Hi, I&apos;m{' '}
+          <span className='hero-name'>Sam</span>
+        </h1>
+        <p className='hero-tagline'>
+          Hey there! I&apos;m a passionate developer who loves building web
+          applications with a focus on UI and UX. I love what I do and I&apos;m
+          always eager to learn new technologies and improve my skills. Feel
+          free to check out my projects below or get in touch!
+        </p>
+        <button
+          type='button'
+          className='hero-cta'
+          onClick={handleContactClick}
+          aria-label='Show social contact links'
+          style={{ cursor: 'pointer' }}
+        >
+          Contact Me
+        </button>
+      </section>
 
-      <div className='p-8 max-w-4xl mx-auto'>
-        <div className='bg-yellow-50 border-2 border-yellow-500 rounded-lg p-6 mb-8'>
-          <h1 className='text-3xl font-bold mb-4'>
-            🚀 Ready to Build Your Portfolio?
-          </h1>
-          <p className='mb-4 text-gray-700'>
-            This is where your portfolio will live. Follow the steps below to
-            build it with Copilot as your coding partner!
-          </p>
-          <div className='bg-white rounded p-4 border border-yellow-300'>
-            <h2 className='font-semibold mb-2'>Quick Start Guide:</h2>
-            <ol className='list-decimal list-inside space-y-2 text-sm'>
-              <li>Read STEP 1 instructions above</li>
-              <li>Open Copilot Chat (Ctrl/Cmd + Shift + I)</li>
-              <li>Switch to Agent Mode with Claude/Auto model</li>
-              <li>Ask Copilot to create the base layout</li>
-              <li>Replace this placeholder with your new layout</li>
-              <li>Continue with STEP 2, 3, 4, etc.</li>
-            </ol>
+      {/* About */}
+      <section id='about' className='about-section'>
+        <div className='about-inner'>
+          <div className='about-photo-wrapper'>
+            <Image
+              src={profilepic}
+              alt='Samuel Schill portrait'
+              className='about-photo'
+            />
+          </div>
+          <div className='about-content'>
+            <h2 className='about-heading'>About Me</h2>
+            <p className='about-bio'>
+              I am a web developer focused on building clean, responsive user
+              interfaces and practical web apps. I enjoy learning new tools, and
+              turning ideas into polished experiences.
+            </p>
+            <ul className='about-skills' aria-label='Skills'>
+              {aboutSkills.map(skill => (
+                <li key={skill} className='about-skill-item'>
+                  {skill}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
+      </section>
 
-        {/* Placeholder sections to guide structure */}
-        <section className='border-2 border-dashed border-gray-300 rounded-lg p-8 mb-6'>
-          <h2 className='text-xl font-semibold text-gray-500'>
-            📍 Header Section
-          </h2>
-          <p className='text-gray-400'>Your navigation will go here</p>
-        </section>
+      {/* Projects Grid */}
+      <section id='projects' className='projects-section'>
+        <div className='projects-inner'>
+          <h2 className='projects-heading'>Projects</h2>
+          <div className='projects-grid'>
+            {projects.map(project => (
+              <article key={project.title} className='project-card'>
+                <div
+                  className={`project-image ${
+                    imagesLoaded.has(project.title)
+                      ? 'project-image-loaded'
+                      : 'project-image-loading'
+                  }`}
+                  aria-hidden='true'
+                >
+                  {typeof project.screenshot === 'string' ? (
+                    project.screenshot && (
+                      <Image
+                        src={project.screenshot}
+                        alt={project.title}
+                        onLoad={() => handleImageLoad(project.title)}
+                      />
+                    )
+                  ) : (
+                    <Image
+                      src={project.screenshot}
+                      alt={project.title}
+                      onLoad={() => handleImageLoad(project.title)}
+                    />
+                  )}
+                  {!imagesLoaded.has(project.title) && (
+                    <div
+                      className='project-image-skeleton'
+                      aria-hidden='true'
+                    ></div>
+                  )}
+                </div>
+                <h3 className='project-title'>{project.title}</h3>
+                <p className='project-description'>{project.description}</p>
+                <ul
+                  className='project-tech-list'
+                  aria-label='Technologies used'
+                >
+                  {project.tech.map(tag => (
+                    <li key={tag} className='project-tech-tag'>
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href={project.link}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='project-link'
+                  aria-label={`View ${project.title}`}
+                >
+                  View Project →
+                </a>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
-        <section className='border-2 border-dashed border-gray-300 rounded-lg p-8 mb-6'>
-          <h2 className='text-xl font-semibold text-gray-500'>
-            📍 Hero Section
-          </h2>
-          <p className='text-gray-400'>
-            Your introduction and tagline will go here
-          </p>
-        </section>
+      {/* Contact Section */}
+      <section id='contact' className='contact-section'>
+        <div className='footer-inner'>
+          <section className='contact-form-section' aria-label='contact-form'>
+            <h2 className='contact-form-heading'>Contact Me</h2>
+            <form
+              className='contact-form'
+              onSubmit={handleContactFormSubmit}
+              noValidate
+            >
+              <label className='contact-form-label' htmlFor='contact-name'>
+                Name
+              </label>
+              <input
+                id='contact-name'
+                name='name'
+                type='text'
+                className='contact-form-input'
+                value={contactFormValues.name}
+                onChange={handleContactFormChange}
+                aria-invalid={Boolean(contactFormErrors.name)}
+                aria-describedby={
+                  contactFormErrors.name ? 'contact-name-error' : undefined
+                }
+              />
+              {contactFormErrors.name && (
+                <p id='contact-name-error' className='contact-form-error'>
+                  {contactFormErrors.name}
+                </p>
+              )}
 
-        <section className='border-2 border-dashed border-gray-300 rounded-lg p-8 mb-6'>
-          <h2 className='text-xl font-semibold text-gray-500'>
-            📍 Projects Grid
-          </h2>
-          <p className='text-gray-400'>Your project cards will go here</p>
-        </section>
+              <label className='contact-form-label' htmlFor='contact-email'>
+                Email
+              </label>
+              <input
+                id='contact-email'
+                name='email'
+                type='email'
+                className='contact-form-input'
+                value={contactFormValues.email}
+                onChange={handleContactFormChange}
+                aria-invalid={Boolean(contactFormErrors.email)}
+                aria-describedby={
+                  contactFormErrors.email ? 'contact-email-error' : undefined
+                }
+              />
+              {contactFormErrors.email && (
+                <p id='contact-email-error' className='contact-form-error'>
+                  {contactFormErrors.email}
+                </p>
+              )}
 
-        <section className='border-2 border-dashed border-gray-300 rounded-lg p-8 mb-6'>
-          <h2 className='text-xl font-semibold text-gray-500'>📍 Footer</h2>
-          <p className='text-gray-400'>Your social links will go here</p>
-        </section>
-      </div>
+              <label className='contact-form-label' htmlFor='contact-message'>
+                Message
+              </label>
+              <textarea
+                id='contact-message'
+                name='message'
+                className='contact-form-textarea'
+                rows={4}
+                value={contactFormValues.message}
+                onChange={handleContactFormChange}
+                aria-invalid={Boolean(contactFormErrors.message)}
+                aria-describedby={
+                  contactFormErrors.message
+                    ? 'contact-message-error'
+                    : undefined
+                }
+              />
+              {contactFormErrors.message && (
+                <p id='contact-message-error' className='contact-form-error'>
+                  {contactFormErrors.message}
+                </p>
+              )}
 
-      {/* ==========================================
-       * 🎯 STEP 2: FILL IN THE HERO SECTION
-       * ==========================================
-       *
-       * ✅ TODO: ADD CONTENT TO HERO SECTION
-       *
-       * Once you have the base layout, enhance the hero:
-       *
-       * Instructions:
-       * 1. Highlight the hero section in your new layout
-       * 2. Use Inline Chat (Ctrl/Cmd + I)
-       * 3. Ask: "Hero with my name, tagline, and a 'Contact Me' button"
-       * 4. Customize with your actual name and tagline
-       * 5. Refine: "Make the button a mailto: link to [your-email]"
-       *
-       * ========================================== */}
+              <button
+                type='submit'
+                className='contact-form-submit'
+                disabled={!isContactFormValid || isSubmitting}
+                aria-busy={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <span className='loading-spinner' aria-hidden='true'></span>
+                    Sending...
+                  </>
+                ) : (
+                  'Send'
+                )}
+              </button>
+              {contactFormStatus && (
+                <p
+                  className={`contact-form-status ${
+                    contactFormStatusType === 'success'
+                      ? 'contact-form-status-success'
+                      : 'contact-form-status-error'
+                  }`}
+                  role='status'
+                >
+                  {contactFormStatus}
+                </p>
+              )}
+            </form>
+          </section>
+        </div>
+      </section>
 
-      {/* ==========================================
-       * 🎯 STEP 3: BUILD THE PROJECTS GRID
-       * ==========================================
-       *
-       * ✅ TODO: ADD PROJECT CARDS
-       *
-       * Instructions:
-       * 1. Highlight the projects section
-       * 2. Use Agent Mode
-       * 3. Ask: "Projects section with cards: title, description,
-       *         image placeholder, and link"
-       * 4. Add 3-4 sample projects
-       * 5. Refine with Inline Chat: "Add a hover animation for each card"
-       *
-       * ========================================== */}
-
-      {/* ==========================================
-       * 🎯 STEP 4: CREATE THE FOOTER
-       * ==========================================
-       *
-       * ✅ TODO: ADD FOOTER WITH SOCIAL LINKS
-       *
-       * Instructions:
-       * 1. Highlight the footer section
-       * 2. Use Inline Chat
-       * 3. Ask: "Footer with copyright and links to GitHub,
-       *         LinkedIn, Twitter"
-       * 4. Refine: "Add aria-labels for social links"
-       * 5. Update with your actual social media URLs
-       *
-       * ========================================== */}
-
-      {/* ==========================================
-       * 🎯 STEP 5: ADD AN ABOUT SECTION
-       * ==========================================
-       *
-       * ✅ TODO: INSERT ABOUT SECTION
-       *
-       * Instructions:
-       * 1. Place cursor between Projects and Footer
-       * 2. Use Agent Mode
-       * 3. Ask: "About section with my photo placeholder,
-       *         short bio, and list of skills"
-       * 4. Refine: "Use Tailwind spacing consistent with Hero section"
-       * 5. Refine: "Keep the About text in a centered column"
-       *
-       * ========================================== */}
-
-      {/* ==========================================
-       * 🎯 STEP 6: ADD CONTACT FORM
-       * ==========================================
-       *
-       * ✅ TODO: CREATE CONTACT FORM
-       *
-       * Instructions:
-       * 1. Add a new section before the footer
-       * 2. Use Agent Mode
-       * 3. Ask: "Add a contact form with name, email,
-       *         message and basic validation"
-       * 4. Use Edit Mode: "Disable submit until all fields are valid"
-       * 5. Add: "Show success message after submission"
-       *
-       * ========================================== */}
-
-      {/* ==========================================
-       * 🎯 STEP 7: ADD DARK MODE (OPTIONAL)
-       * ==========================================
-       *
-       * ✅ TODO: IMPLEMENT DARK MODE TOGGLE
-       *
-       * Instructions:
-       * 1. Highlight the header
-       * 2. Use Agent Mode
-       * 3. Ask: "Add dark mode toggle in the header"
-       * 4. Test the toggle works across all sections
-       * 5. Refine colors if needed
-       *
-       * ========================================== */}
-
-      {/* ==========================================
-       * 🎯 STEP 8: POLISH & ANIMATIONS
-       * ==========================================
-       *
-       * ✅ TODO: ADD FINISHING TOUCHES
-       *
-       * Use Edit Mode for these refinements:
-       * 1. "Fade in hero section on page load"
-       * 2. "Add smooth scroll behavior for navigation links"
-       * 3. "Improve spacing and typography hierarchy"
-       * 4. "Ensure all sections are responsive on mobile"
-       * 5. "Add loading states where appropriate"
-       *
-       * ========================================== */}
-
-      {/* ==========================================
-       * 🎯 FINAL REVIEW CHECKLIST
-       * ==========================================
-       *
-       * Before you're done, verify:
-       *
-       * ✓ Responsive Design
-       *   - Test on mobile, tablet, desktop viewports
-       *   - Check text is readable at all sizes
-       *
-       * ✓ Accessibility
-       *   - All interactive elements have aria-labels
-       *   - Images have alt text
-       *   - Keyboard navigation works
-       *   - Color contrast is sufficient
-       *
-       * ✓ Consistency
-       *   - Follows your .github/copilot-instructions.md rules
-       *   - Uses Tailwind classes consistently
-       *   - Arrow functions throughout
-       *   - TypeScript types defined
-       *
-       * ✓ Functionality
-       *   - All links work
-       *   - Contact form validates input
-       *   - Animations are smooth
-       *   - No console errors
-       *
-       * ========================================== */}
+      {/* Footer */}
+      <footer className='site-footer'>
+        <div className='footer-inner'>
+          <div className='footer-meta'>
+            <p className='footer-copy'>
+              &copy; {new Date().getFullYear()} Samuel Schill. All rights
+              reserved.
+            </p>
+            <nav aria-label='Social links'>
+              <ul className='social-list'>
+                {socialLinks.map((socialLink, index) => (
+                  <li
+                    key={socialLink.label}
+                    className={`social-item ${
+                      activeSocialIndex === index ? 'social-item-active' : ''
+                    }`}
+                  >
+                    <a
+                      href={socialLink.href}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='social-link'
+                      aria-label={socialLink.ariaLabel}
+                    >
+                      {socialLink.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
-
-/* ==========================================
- * 💡 TIPS FOR SUCCESS
- * ==========================================
- *
- * 1. START BIG, THEN REFINE
- *    - Use Agent Mode to scaffold entire sections quickly
- *    - Then use Edit Mode (Inline Chat) for small improvements
- *    - Don't try to get everything perfect in one prompt
- *
- * 2. ITERATE IN STEPS
- *    - Build one section at a time
- *    - Test each section before moving to the next
- *    - It's easier to debug small changes
- *
- * 3. USE ASK MODE FOR GUIDANCE
- *    - "What's the best way to structure this component?"
- *    - "How can I improve the performance here?"
- *    - "What accessibility features am I missing?"
- *
- * 4. CUSTOMIZE IT
- *    - Replace placeholder text with your real information
- *    - Add your own projects and achievements
- *    - Make it reflect your personality and style
- *
- * 5. LEARN BY REVIEWING
- *    - Don't just accept code blindly
- *    - Read what Copilot generates
- *    - Ask it to explain anything unclear
- *    - Understand the patterns so you can use them later
- *
- * 6. COMMON ISSUES & FIXES
- *    - Spacing looks off? → "Improve spacing using Tailwind"
- *    - Not responsive? → "Make this section responsive on mobile"
- *    - Missing types? → "Add TypeScript types for props"
- *    - Need animation? → "Add smooth transition animations"
- *
- * ========================================== */
-
-/* ==========================================
- * 🎉 CONGRATULATIONS!
- * ==========================================
- *
- * When you complete this portfolio, you will have:
- *
- * ✓ Built a real, production-ready website with Copilot
- * ✓ Mastered Agent Mode for large scaffolding tasks
- * ✓ Used Edit Mode for precise refinements
- * ✓ Applied Ask Mode for strategic guidance
- * ✓ Leveraged rules for consistent code style
- * ✓ Created something you can actually deploy and share!
- *
- * NEXT STEPS:
- * - Deploy your portfolio to Vercel or Netlify
- * - Share it on LinkedIn and Twitter
- * - Keep practicing with Copilot on real projects
- * - Teach others what you've learned
- *
- * Remember: Copilot is a tool to amplify your skills,
- * not replace them. The more you understand code, the
- * better you'll be at directing Copilot to build
- * exactly what you envision.
- *
- * Happy coding! 🚀
- *
- * ========================================== */

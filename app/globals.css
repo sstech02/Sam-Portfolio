@@ -24,3 +24,385 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ── Layout ── */
+.page-wrapper {
+  @apply min-h-screen bg-white text-gray-900;
+}
+
+/* ── Header ── */
+.site-header {
+  @apply sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm;
+}
+.header-inner {
+  @apply max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between;
+}
+.site-logo {
+  @apply text-base sm:text-lg font-bold tracking-tight text-gray-900;
+  letter-spacing: -0.5px;
+}
+.nav-list {
+  @apply flex gap-4 sm:gap-8 items-center;
+}
+.nav-link {
+  @apply text-sm font-medium text-gray-600 transition-colors duration-200;
+  line-height: 1.5;
+  &:hover {
+    @apply text-gray-900;
+  }
+}
+.theme-toggle {
+  @apply text-xs font-semibold rounded-full border border-gray-300 px-3 py-1.5 bg-white text-gray-700 transition-colors duration-200;
+  &:hover {
+    @apply bg-gray-100;
+  }
+  &:focus {
+    @apply outline-none ring-2 ring-indigo-500 ring-offset-2;
+  }
+}
+
+/* ── Hero ── */
+.hero-section {
+  @apply max-w-5xl mx-auto px-4 sm:px-6 py-16 sm:py-24 md:py-32 flex flex-col items-center text-center gap-5 sm:gap-6 md:gap-8;
+  animation: hero-fade-in 700ms ease-out;
+}
+.hero-avatar {
+  @apply w-20 sm:w-24 h-20 sm:h-24 rounded-full bg-gray-200 flex items-center justify-center text-2xl sm:text-3xl;
+  margin-bottom: 0.5rem;
+}
+.hero-heading {
+  @apply text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900;
+  line-height: 1.2;
+  letter-spacing: -1px;
+  margin: 0;
+}
+.hero-name {
+  @apply text-indigo-600;
+}
+.hero-tagline {
+  @apply text-base sm:text-lg text-gray-600 max-w-2xl px-2;
+  line-height: 1.7;
+  letter-spacing: 0.3px;
+}
+.hero-cta {
+  @apply mt-4 sm:mt-6 inline-block bg-indigo-600 text-white px-6 sm:px-7 py-2.5 sm:py-3.5 rounded-lg font-semibold transition-colors duration-200;
+  line-height: 1.5;
+  &:hover {
+    @apply bg-indigo-700;
+  }
+  &:focus {
+    @apply outline-none ring-2 ring-indigo-500 ring-offset-2;
+  }
+}
+
+/* ── About ── */
+.about-section {
+  @apply py-16 sm:py-24 md:py-32 bg-white;
+}
+.about-inner {
+  @apply max-w-5xl mx-auto px-4 sm:px-6 grid gap-8 sm:gap-12 items-center md:grid-cols-[240px,1fr];
+}
+.about-photo-wrapper {
+  @apply h-48 w-48 sm:h-60 sm:w-60 max-w-full mx-auto rounded-2xl overflow-hidden border border-gray-200 shadow-sm;
+}
+.about-photo {
+  @apply w-full h-full object-cover;
+}
+.about-content {
+  @apply flex flex-col gap-6 sm:gap-8 max-w-xl mx-auto text-center;
+}
+.about-heading {
+  @apply text-3xl sm:text-4xl font-bold text-gray-900;
+  line-height: 1.25;
+  letter-spacing: -0.5px;
+}
+.about-bio {
+  @apply text-sm sm:text-base text-gray-600;
+  line-height: 1.8;
+  letter-spacing: 0.3px;
+}
+.about-skills {
+  @apply flex flex-wrap gap-2 sm:gap-3 justify-center px-2;
+}
+.about-skill-item {
+  @apply text-xs sm:text-sm bg-gray-100 text-gray-700 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full border border-gray-200 font-medium;
+  line-height: 1.4;
+}
+
+/* ── Projects ── */
+.projects-section {
+  @apply bg-gray-50 py-16 sm:py-24 md:py-32;
+}
+.projects-inner {
+  @apply max-w-5xl mx-auto px-4 sm:px-6;
+}
+.projects-heading {
+  @apply text-3xl sm:text-4xl font-bold mb-8 sm:mb-14 text-center text-gray-900;
+  line-height: 1.25;
+  letter-spacing: -0.5px;
+}
+.projects-grid {
+  @apply grid gap-4 sm:gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+}
+.project-card {
+  @apply bg-white rounded-xl border border-gray-200 p-4 sm:p-6 flex flex-col gap-4 sm:gap-5 transition-shadow duration-200;
+  &:hover {
+    @apply shadow-lg;
+  }
+}
+.project-image {
+  @apply w-full h-32 sm:h-40 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs sm:text-sm relative overflow-hidden;
+}
+.project-image-loading {
+  @apply bg-gray-200;
+}
+.project-image-loaded {
+  @apply bg-gray-100;
+}
+.project-image-skeleton {
+  @apply absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse;
+}
+.project-title {
+  @apply text-base sm:text-lg font-semibold text-gray-900;
+  line-height: 1.4;
+  letter-spacing: -0.3px;
+}
+.project-description {
+  @apply text-xs sm:text-sm text-gray-600 flex-1;
+  line-height: 1.6;
+  letter-spacing: 0.2px;
+}
+.project-tech-list {
+  @apply flex flex-wrap gap-1.5 sm:gap-2.5;
+}
+.project-tech-tag {
+  @apply text-xs bg-indigo-50 text-indigo-700 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-full font-medium;
+  line-height: 1.4;
+}
+.project-link {
+  @apply text-sm font-medium text-indigo-600 rounded transition-colors duration-200;
+  line-height: 1.5;
+  &:hover {
+    @apply underline text-indigo-700;
+  }
+  &:focus {
+    @apply outline-none ring-2 ring-indigo-500;
+  }
+}
+
+/* ── Footer ── */
+.contact-section {
+  @apply border-t border-gray-200 py-10 sm:py-16 bg-gray-50;
+}
+.site-footer {
+  @apply py-8 sm:py-12 bg-gray-50;
+}
+.footer-inner {
+  @apply max-w-5xl mx-auto px-4 sm:px-6 flex flex-col items-center gap-6 sm:gap-8;
+}
+.footer-meta {
+  @apply w-full mx-auto flex flex-col items-center justify-center gap-4 sm:gap-6 text-center px-4;
+}
+.footer-copy {
+  @apply text-xs sm:text-sm text-gray-600;
+  line-height: 1.5;
+}
+.social-list {
+  @apply flex gap-4 sm:gap-8 justify-center;
+}
+.social-item {
+  @apply relative flex items-center;
+}
+.social-link {
+  @apply text-xs sm:text-sm text-gray-600 transition-colors duration-200 font-medium;
+  line-height: 1.5;
+  &:hover {
+    @apply text-gray-900;
+  }
+}
+.social-item-active .social-link {
+  @apply font-bold text-gray-900;
+}
+
+.contact-form-section {
+  @apply w-full max-w-2xl bg-white rounded-2xl border border-gray-200 p-5 sm:p-8 shadow-sm mx-4 sm:mx-0;
+}
+.contact-form-heading {
+  @apply text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-gray-900;
+  line-height: 1.3;
+  letter-spacing: -0.5px;
+}
+.contact-form {
+  @apply flex flex-col gap-4 sm:gap-6;
+}
+.contact-form-label {
+  @apply text-xs sm:text-sm font-semibold text-gray-700 mt-1 block;
+  line-height: 1.5;
+  letter-spacing: 0.3px;
+}
+.contact-form-input,
+.contact-form-textarea {
+  @apply w-full rounded-lg border border-gray-300 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200;
+  line-height: 1.5;
+}
+.contact-form-textarea {
+  @apply resize-y min-h-24;
+}
+.contact-form-error {
+  @apply text-xs sm:text-sm text-red-600 mt-1.5;
+  line-height: 1.4;
+}
+.contact-form-submit {
+  @apply mt-2 inline-flex w-full sm:w-fit items-center justify-center rounded-lg bg-indigo-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold transition-colors duration-200;
+  line-height: 1.5;
+  &:hover:not(:disabled) {
+    @apply bg-indigo-700;
+  }
+  &:focus {
+    @apply outline-none ring-2 ring-indigo-500 ring-offset-2;
+  }
+  &:disabled {
+    @apply bg-gray-300 text-gray-500 cursor-not-allowed opacity-75;
+  }
+}
+
+.loading-spinner {
+  @apply inline-block w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full;
+  animation: spin 0.8s linear infinite;
+}
+.contact-form-status {
+  @apply mt-4 text-xs sm:text-sm text-gray-600;
+  line-height: 1.5;
+}
+.contact-form-status-success {
+  @apply text-green-700 font-medium;
+}
+.contact-form-status-error {
+  @apply text-red-600 font-medium;
+}
+
+@keyframes hero-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+ 
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+} }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-section {
+    animation: none;
+  }
+}
+
+.dark-mode {
+  @apply bg-gray-950 text-gray-100;
+}
+.dark-mode .site-header {
+  @apply bg-gray-900 border-gray-800;
+}
+.dark-mode .site-logo {
+  @apply text-gray-100;
+}
+.dark-mode .hero-heading,
+.dark-mode .projects-heading,
+.dark-mode .about-heading,
+.dark-mode .contact-form-heading,
+.dark-mode .project-title {
+  @apply text-white font-bold;
+}
+.dark-mode .nav-link,
+.dark-mode .footer-copy,
+.dark-mode .social-link,
+.dark-mode .hero-tagline,
+.dark-mode .about-bio,
+.dark-mode .project-description {
+  @apply text-gray-400;
+}
+.dark-mode .nav-link:hover,
+.dark-mode .social-link:hover {
+  @apply text-gray-100;
+}
+.dark-mode .theme-toggle {
+  @apply bg-gray-800 border-gray-700 text-gray-100;
+}
+.dark-mode .theme-toggle:hover {
+  @apply bg-gray-700;
+}
+.dark-mode .about-section,
+.dark-mode .projects-section,
+.dark-mode .contact-section,
+.dark-mode .site-footer {
+  @apply bg-gray-950 border-gray-800;
+}
+.dark-mode .project-card,
+.dark-mode .contact-form-section,
+.dark-mode .about-photo-wrapper {
+  @apply bg-gray-900 border-gray-700;
+}
+.dark-mode .project-image {
+  @apply bg-gray-800;
+}
+.dark-mode .project-image-loading {
+  @apply bg-gray-700;
+}
+.dark-mode .project-image-skeleton {
+  @apply bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700;
+}
+.dark-mode .about-skill-item {
+  @apply bg-gray-800 border-gray-700 text-gray-300;
+}
+.dark-mode .project-tech-tag {
+  @apply bg-indigo-950 border-indigo-900 text-indigo-300;
+}
+.dark-mode .contact-form-input,
+.dark-mode .contact-form-textarea {
+  @apply bg-gray-900 border-gray-700 text-gray-100;
+}
+.dark-mode .contact-form-label {
+  @apply text-gray-300;
+}
+.dark-mode .contact-form-status {
+  @apply text-gray-300;
+}
+.dark-mode .contact-form-status-success {
+  @apply text-green-400;
+}
+.dark-mode .contact-form-status-error {
+  @apply text-red-400;
+}
+
+@keyframes wave {
+  0% { transform: rotate(0deg); }
+  10% { transform: rotate(14deg); }
+  20% { transform: rotate(-8deg); }
+  30% { transform: rotate(14deg); }
+  40% { transform: rotate(-4deg); }
+  50% { transform: rotate(10deg); }
+  60% { transform: rotate(0deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.waving-hand {
+  display: inline-block;
+  animation: wave 2s infinite reverse ease;
+  transform-origin: 70% 70%;
+}
