@@ -173,8 +173,51 @@ body {
   line-height: 1.25;
   letter-spacing: -0.5px;
 }
-.projects-grid {
-  @apply grid gap-4 sm:gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+.projects-slider {
+  @apply overflow-visible;
+}
+.projects-slider .keen-slider__slide {
+  @apply min-h-full;
+}
+.projects-slider-shell {
+  @apply relative;
+}
+.projects-slider-controls {
+  @apply mt-6 sm:mt-8 flex items-center justify-center;
+}
+.projects-slider-button {
+  @apply h-10 w-10 inline-flex items-center justify-center rounded-full border border-indigo-200 bg-white text-indigo-700 text-lg font-semibold transition-colors duration-200;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  box-shadow: 0 10px 24px rgba(79, 70, 229, 0.14);
+  &:hover:not(:disabled) {
+    @apply bg-indigo-50;
+  }
+  &:focus {
+    @apply outline-none ring-2 ring-indigo-500 ring-offset-2;
+  }
+  &:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+}
+.projects-slider-button-left {
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+.projects-slider-button-right {
+  right: 0;
+  transform: translate(50%, -50%);
+}
+.projects-slider-dots {
+  @apply flex items-center gap-2;
+}
+.projects-slider-dot {
+  @apply h-2.5 w-2.5 rounded-full bg-indigo-200 transition-all duration-200;
+}
+.projects-slider-dot-active {
+  @apply w-6 bg-indigo-600;
 }
 .project-card {
   @apply bg-white rounded-xl border border-gray-200 p-4 sm:p-6 flex flex-col gap-4 sm:gap-5 transition-shadow duration-200;
@@ -479,6 +522,30 @@ body {
 }
 .dark-mode .project-image {
   @apply bg-gray-800;
+}
+.dark-mode .projects-slider-button {
+  @apply border-indigo-900 bg-gray-900 text-indigo-300;
+}
+.dark-mode .projects-slider-button:hover:not(:disabled) {
+  @apply bg-indigo-950;
+}
+.dark-mode .projects-slider-dot {
+  @apply bg-indigo-900;
+}
+.dark-mode .projects-slider-dot-active {
+  @apply bg-indigo-400;
+}
+
+@media (max-width: 767px) {
+  .projects-slider-button-left {
+    left: 0.15rem;
+    transform: translate(-50%, -50%);
+  }
+
+  .projects-slider-button-right {
+    right: 0.15rem;
+    transform: translate(50%, -50%);
+  }
 }
 .dark-mode .project-image-loading {
   @apply bg-gray-700;

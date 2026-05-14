@@ -9,10 +9,14 @@ import {
 } from 'react'
 import Image from 'next/image'
 import type { StaticImageData } from 'next/image'
+import { useKeenSlider } from 'keen-slider/react'
+import 'keen-slider/keen-slider.min.css'
 import profilepic from '../app/assets/SamuelSchillprofilepic.jpg'
 import SaminternshipV2 from '../app/assets/SaminternshipV2.png'
 import Netflixclone from '../app/assets/Netflixclone.png'
 import Ultraverse from '../app/assets/Ultraverse.png'
+import Skinstric from '../app/assets/SkinstricAI.png'
+
 // Project data for the projects grid
 interface Project {
   title: string
@@ -46,6 +50,14 @@ const projects: Project[] = [
     tech: ['Vite', 'HTML', 'CSS', 'JavaScript'],
     link: 'https://netflix-clone-ten-iota-12.vercel.app/',
     screenshot: Netflixclone
+  },
+  {
+    title: 'Skinstric AI Clone',
+    description:
+      'A front-end clone inspired by Skinstric AI, focused on polished UI composition, responsive layouts, and modern interaction patterns.',
+    tech: ['Next.js', 'TypeScript', 'Tailwind CSS'],
+    link: 'https://skinstricaicloneschill.vercel.app/',
+    screenshot: Skinstric
   }
 ]
 
@@ -131,6 +143,60 @@ export default function Home () {
     useState<ContactFormStatusType>('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [imagesLoaded, setImagesLoaded] = useState<Set<string>>(new Set())
+  const [currentProjectSlide, setCurrentProjectSlide] = useState(0)
+  const [projectSlideCount, setProjectSlideCount] = useState(1)
+
+  const updateProjectsSliderState = (slider: {
+    track: {
+      details: {
+        rel: number
+        maxIdx: number
+        slides?: Array<unknown>
+      }
+    }
+  }) => {
+    const details = slider.track.details
+    const safeCurrentSlide =
+      Number.isFinite(details.rel) && details.rel >= 0
+        ? Math.floor(details.rel)
+        : 0
+    const derivedSlideCount = Array.isArray(details.slides)
+      ? details.slides.length
+      : Number.isFinite(details.maxIdx)
+      ? Math.floor(details.maxIdx) + 1
+      : projects.length
+    const safeSlideCount = Math.max(1, derivedSlideCount)
+
+    setCurrentProjectSlide(safeCurrentSlide % safeSlideCount)
+    setProjectSlideCount(safeSlideCount)
+  }
+
+  const [projectsSliderRef, projectsSliderInstanceRef] =
+    useKeenSlider<HTMLDivElement>({
+      mode: 'snap',
+      loop: true,
+      slides: { perView: 1, spacing: 16 },
+      breakpoints: {
+        '(min-width: 640px)': {
+          slides: { perView: 1.5, spacing: 20 }
+        },
+        '(min-width: 1024px)': {
+          slides: { perView: 2.2, spacing: 24 }
+        },
+        '(min-width: 1280px)': {
+          slides: { perView: 2.6, spacing: 24 }
+        }
+      },
+      created: slider => {
+        updateProjectsSliderState(slider)
+      },
+      updated: slider => {
+        updateProjectsSliderState(slider)
+      },
+      slideChanged: slider => {
+        updateProjectsSliderState(slider)
+      }
+    })
 
   const handleImageLoad = (projectTitle: string) => {
     setImagesLoaded(prev => new Set(prev).add(projectTitle))
@@ -390,62 +456,108 @@ export default function Home () {
       <section id='projects' className='projects-section'>
         <div className='projects-inner'>
           <h2 className='projects-heading'>Projects</h2>
-          <div className='projects-grid'>
-            {projects.map(project => (
-              <article key={project.title} className='project-card'>
-                <div
-                  className={`project-image ${
-                    imagesLoaded.has(project.title)
-                      ? 'project-image-loaded'
-                      : 'project-image-loading'
-                  }`}
-                  aria-hidden='true'
+          <div className='projects-slider-shell'>
+            <button
+              type='button'
+              className='projects-slider-button projects-slider-button-left'
+              onClick={() => projectsSliderInstanceRef.current?.prev()}
+              aria-label='Previous project'
+            >
+              ←
+            </button>
+            <div
+              ref={projectsSliderRef}
+              className='projects-slider keen-slider'
+            >
+              {projects.map(project => (
+                <article
+                  key={project.title}
+                  className='project-card keen-slider__slide'
                 >
-                  {typeof project.screenshot === 'string' ? (
-                    project.screenshot && (
+                  <div
+                    className={`project-image ${
+                      imagesLoaded.has(project.title)
+                        ? 'project-image-loaded'
+                        : 'project-image-loading'
+                    }`}
+                    aria-hidden='true'
+                  >
+                    {typeof project.screenshot === 'string' ? (
+                      project.screenshot && (
+                        <Image
+                          src={project.screenshot}
+                          alt={project.title}
+                          onLoad={() => handleImageLoad(project.title)}
+                        />
+                      )
+                    ) : (
                       <Image
                         src={project.screenshot}
                         alt={project.title}
                         onLoad={() => handleImageLoad(project.title)}
                       />
-                    )
-                  ) : (
-                    <Image
-                      src={project.screenshot}
-                      alt={project.title}
-                      onLoad={() => handleImageLoad(project.title)}
-                    />
-                  )}
-                  {!imagesLoaded.has(project.title) && (
-                    <div
-                      className='project-image-skeleton'
-                      aria-hidden='true'
-                    ></div>
-                  )}
-                </div>
-                <h3 className='project-title'>{project.title}</h3>
-                <p className='project-description'>{project.description}</p>
-                <ul
-                  className='project-tech-list'
-                  aria-label='Technologies used'
-                >
-                  {project.tech.map(tag => (
-                    <li key={tag} className='project-tech-tag'>
-                      {tag}
-                    </li>
-                  ))}
-                </ul>
-                <a
-                  href={project.link}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='project-link'
-                  aria-label={`View ${project.title}`}
-                >
-                  View Project →
-                </a>
-              </article>
-            ))}
+                    )}
+                    {!imagesLoaded.has(project.title) && (
+                      <div
+                        className='project-image-skeleton'
+                        aria-hidden='true'
+                      ></div>
+                    )}
+                  </div>
+                  <h3 className='project-title'>{project.title}</h3>
+                  <p className='project-description'>{project.description}</p>
+                  <ul
+                    className='project-tech-list'
+                    aria-label='Technologies used'
+                  >
+                    {project.tech.map(tag => (
+                      <li key={tag} className='project-tech-tag'>
+                        {tag}
+                      </li>
+                    ))}
+                  </ul>
+                  <a
+                    href={project.link}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='project-link'
+                    aria-label={`View ${project.title}`}
+                  >
+                    View Project →
+                  </a>
+                </article>
+              ))}
+            </div>
+            <button
+              type='button'
+              className='projects-slider-button projects-slider-button-right'
+              onClick={() => projectsSliderInstanceRef.current?.next()}
+              aria-label='Next project'
+            >
+              →
+            </button>
+          </div>
+          <div
+            className='projects-slider-controls'
+            aria-label='Projects slider controls'
+          >
+            <div className='projects-slider-dots' aria-hidden='true'>
+              {Array.from({ length: projectSlideCount }).map((_, index) => (
+                <button
+                  key={`projects-dot-${index}`}
+                  type='button'
+                  className={`projects-slider-dot ${
+                    currentProjectSlide === index
+                      ? 'projects-slider-dot-active'
+                      : ''
+                  }`}
+                  onClick={() =>
+                    projectsSliderInstanceRef.current?.moveToIdx(index)
+                  }
+                  aria-label={`Go to project slide ${index + 1}`}
+                ></button>
+              ))}
+            </div>
           </div>
         </div>
       </section>
