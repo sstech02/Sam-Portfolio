@@ -13,4 +13,5 @@ export type Project = {
   tags: string[]
   url: string
   bg: string
+  image: string
 }

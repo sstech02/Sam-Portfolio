@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import type { FormEvent } from 'react'
 import './App.css'
 import { AboutSection } from './components/AboutSection'
 import { ContactSection } from './components/ContactSection'
@@ -21,7 +20,6 @@ function App() {
     return storedTheme === 'dark' ? 'dark' : 'light'
   })
   const [activeFilter, setActiveFilter] = useState('all')
-  const [showFormMessage, setShowFormMessage] = useState(false)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -41,13 +39,6 @@ function App() {
           )
         })
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setShowFormMessage(true)
-    event.currentTarget.reset()
-    window.setTimeout(() => setShowFormMessage(false), 3500)
-  }
-
   return (
     <>
       <div className="bg-grid" />
@@ -62,7 +53,7 @@ function App() {
         projects={filteredProjects}
       />
       <TimelineSection />
-      <ContactSection showFormMessage={showFormMessage} onSubmit={handleSubmit} />
+      <ContactSection />
       <SiteFooter />
     </>
   )

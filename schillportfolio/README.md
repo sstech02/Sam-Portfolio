@@ -11,6 +11,22 @@ Currently, two official plugins are available:
 
 The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
+## Contact form setup
+
+The contact form uses the React integration from `@formspree/react`.
+
+1. Create a Formspree form
+2. Install dependencies with `npm install`
+3. Update the form ID in [src/components/ContactSection.tsx](src/components/ContactSection.tsx) if you want to point at a different form
+
+Current form configuration:
+
+```ts
+const [state, handleSubmit] = useForm('mvzndjzr')
+```
+
+The form submits `name`, `email`, and `message` through Formspree and surfaces validation errors with `ValidationError`.
+
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:

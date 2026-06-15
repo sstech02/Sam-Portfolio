@@ -12,7 +12,7 @@ export function AboutSection() {
             <p className="about-lead">
               I started writing code in September 2025 after years working in
               high-pressure kitchens — and a lot of what I learned there carries over:
-              run the checklist, ship under pressure, no drama.
+              run the checklist, perform under pressure, no drama.
             </p>
             <p className="about-copy">
               Now I focus on the front end. I care about clean component architecture,

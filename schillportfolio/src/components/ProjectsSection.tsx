@@ -7,21 +7,6 @@ type ProjectsSectionProps = {
   projects: Project[]
 }
 
-function ProjectPreview({ variant }: { variant: string }) {
-  return (
-    <div className={`proj-preview proj-preview--${variant}`} aria-hidden="true">
-      <span className="preview-bar preview-bar--lg" />
-      <span className="preview-bar preview-bar--md" />
-      <div className="preview-grid">
-        <span />
-        <span />
-        <span />
-        <span />
-      </div>
-    </div>
-  )
-}
-
 export function ProjectsSection({ activeFilter, onFilterChange, projects }: ProjectsSectionProps) {
   return (
     <section id="projects">
@@ -54,7 +39,7 @@ export function ProjectsSection({ activeFilter, onFilterChange, projects }: Proj
             >
               <div className="proj-thumb">
                 <div className="proj-thumb-inner">
-                  <ProjectPreview variant={project.bg} />
+                  <img src={project.image} alt={project.title} className="proj-image" loading="lazy" />
                 </div>
               </div>
               <div className="proj-body">

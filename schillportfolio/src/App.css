@@ -599,6 +599,13 @@ section {
   background: linear-gradient(135deg, var(--bg-soft), var(--bg-elev));
 }
 
+.proj-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .proj-preview {
   width: 100%;
   height: 100%;
@@ -971,6 +978,13 @@ section {
   min-height: 120px;
 }
 
+.field-error {
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: #dc2626;
+}
+
 .form-row input:focus,
 .form-row textarea:focus {
   outline: none;
@@ -1003,6 +1017,11 @@ section {
   opacity: 0.9;
 }
 
+.form-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 .form-msg {
   font-family: var(--mono);
   font-size: 12px;
@@ -1014,6 +1033,17 @@ section {
 
 .form-msg.show {
   opacity: 1;
+}
+
+.form-msg.error {
+  color: #dc2626;
+}
+
+.form-note {
+  margin: 12px 0 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted-2);
 }
 
 .site-footer {
