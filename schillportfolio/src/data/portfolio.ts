@@ -29,7 +29,7 @@ export const projects: Project[] = [
     tags: ['Next.js', 'TypeScript', 'Tailwind', 'Firebase', 'Stripe'],
     url: 'https://sam-internship2.vercel.app/',
     bg: 'l1',
-    image: Summarist,
+    image: Summarist.src,
   },
   {
     id: 'skinstric',
@@ -40,7 +40,7 @@ export const projects: Project[] = [
     tags: ['Next.js', 'TypeScript', 'AI'],
     url: 'https://skinstricaicloneschill.vercel.app/',
     bg: 'l2',
-    image: Skinstric,
+    image: Skinstric.src,
   },
   {
     id: 'ultraverse',
@@ -51,7 +51,7 @@ export const projects: Project[] = [
     tags: ['React', 'HTML', 'CSS', 'JavaScript'],
     url: 'https://sam-internship-psi.vercel.app/',
     bg: 'l3',
-    image: Ultraverse,
+    image: Ultraverse.src,
   },
   {
     id: 'netflix',
@@ -62,7 +62,7 @@ export const projects: Project[] = [
     tags: ['Vite', 'HTML', 'CSS', 'JavaScript', 'TMDB'],
     url: 'https://netflix-clone-ten-iota-12.vercel.app/',
     bg: 'l4',
-    image: NetflixClone,
+    image: NetflixClone.src,
   },
   {
     id: 'library',
@@ -73,7 +73,7 @@ export const projects: Project[] = [
     tags: ['React', 'JavaScript'],
     url: 'https://library-react-iagf.vercel.app/',
     bg: 'l5',
-    image: Summarist,
+    image: Summarist.src,
   },
   {
     id: 'kitchen',
@@ -84,7 +84,7 @@ export const projects: Project[] = [
     tags: ['HTML', 'CSS'],
     url: 'Input URL here',
     bg: 'l6',
-    image: Skinstric,
+    image: Skinstric.src,
   },
 ]
 

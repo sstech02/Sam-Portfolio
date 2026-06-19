@@ -1,5 +1,6 @@
+"use client"
+
 import { useEffect, useState } from 'react'
-import './App.css'
 import { AboutSection } from './components/AboutSection'
 import { ContactSection } from './components/ContactSection'
 import { HeroSection } from './components/HeroSection'
