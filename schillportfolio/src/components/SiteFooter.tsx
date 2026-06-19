@@ -14,7 +14,7 @@ export function SiteFooter() {
           >
             linkedin
           </a>
-          <a href="mailto:sam@example.com">email</a>
+          <a href="mailto:samschill.dev@gmail.com">email</a>
         </div>
       </div>
     </footer>

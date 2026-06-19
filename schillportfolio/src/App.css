@@ -482,10 +482,35 @@ section {
   color: var(--muted);
 }
 
-.stack-grid {
+.stack-marquee {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
+}
+
+.stack-row {
+  overflow: hidden;
+}
+
+.stack-track {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  animation: stack-slide-right 24s linear infinite;
+  will-change: transform;
+}
+
+.stack-track--2 {
+  animation-duration: 28s;
+}
+
+@keyframes stack-slide-right {
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0%);
+  }
 }
 
 .stack-card {
@@ -495,6 +520,8 @@ section {
   background: var(--bg-elev);
   transition: all 0.2s ease;
   cursor: default;
+  width: clamp(220px, 43vw, 520px);
+  flex: 0 0 clamp(220px, 43vw, 520px);
 }
 
 .stack-card:hover {
@@ -559,10 +586,17 @@ section {
   border-color: var(--ink-2);
 }
 
-.projects-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+.projects-carousel {
+  overflow: hidden;
+}
+
+.projects-carousel .keen-slider__slide {
+  min-width: 0;
+  contain: layout paint;
+}
+
+.projects-carousel .proj-card {
+  min-height: 100%;
 }
 
 .proj-card {
@@ -572,13 +606,12 @@ section {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: all 0.25s ease;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
   text-decoration: none;
   color: inherit;
 }
 
 .proj-card:hover {
-  transform: translateY(-3px);
   box-shadow: var(--shadow);
   border-color: var(--ink-2);
 }
@@ -1081,12 +1114,13 @@ section {
     gap: 32px;
   }
 
-  .stack-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .stack-card {
+    width: calc((100vw - 52px) / 2);
+    flex-basis: calc((100vw - 52px) / 2);
   }
 
-  .projects-grid {
-    grid-template-columns: 1fr;
+  .projects-carousel {
+    overflow: visible;
   }
 
   .timeline {

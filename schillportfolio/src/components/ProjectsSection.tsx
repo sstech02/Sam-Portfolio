@@ -1,3 +1,6 @@
+import { useEffect } from 'react'
+import { useKeenSlider } from 'keen-slider/react'
+import 'keen-slider/keen-slider.min.css'
 import { filters } from '../data/portfolio'
 import type { Project } from '../types/portfolio'
 
@@ -8,6 +11,73 @@ type ProjectsSectionProps = {
 }
 
 export function ProjectsSection({ activeFilter, onFilterChange, projects }: ProjectsSectionProps) {
+  const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>(
+    {
+      loop: true,
+      renderMode: 'performance',
+      slides: {
+        perView: 1.08,
+        spacing: 20,
+      },
+      breakpoints: {
+        '(min-width: 900px)': {
+          slides: {
+            perView: 2,
+            spacing: 20,
+          },
+        },
+      },
+    },
+    [
+      (slider) => {
+        let timeoutId: ReturnType<typeof setTimeout>
+        let isHovered = false
+
+        const clearNextTimeout = () => {
+          clearTimeout(timeoutId)
+        }
+
+        const nextTimeout = () => {
+          clearNextTimeout()
+          if (isHovered) {
+            return
+          }
+
+          timeoutId = setTimeout(() => {
+            slider.prev()
+          }, 2800)
+        }
+
+        slider.on('created', () => {
+          slider.container.addEventListener('mouseenter', () => {
+            isHovered = true
+            clearNextTimeout()
+          })
+          slider.container.addEventListener('mouseleave', () => {
+            isHovered = false
+            nextTimeout()
+          })
+          nextTimeout()
+        })
+
+        slider.on('dragStarted', () => {
+          clearNextTimeout()
+        })
+        slider.on('animationEnded', nextTimeout)
+        slider.on('updated', nextTimeout)
+        slider.on('destroyed', clearNextTimeout)
+      },
+    ],
+  )
+
+  useEffect(() => {
+    if (!instanceRef.current) {
+      return
+    }
+
+    instanceRef.current.update()
+  }, [projects, activeFilter, instanceRef])
+
   return (
     <section id="projects">
       <div className="wrap">
@@ -28,14 +98,14 @@ export function ProjectsSection({ activeFilter, onFilterChange, projects }: Proj
             </button>
           ))}
         </div>
-        <div className="projects-grid">
+        <div ref={sliderRef} className="keen-slider projects-carousel">
           {projects.map((project, index) => (
             <a
               key={project.id}
               href={project.url}
               target="_blank"
               rel="noreferrer"
-              className="proj-card"
+              className="keen-slider__slide proj-card"
             >
               <div className="proj-thumb">
                 <div className="proj-thumb-inner">
