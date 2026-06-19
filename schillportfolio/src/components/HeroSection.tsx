@@ -11,9 +11,9 @@ export function HeroSection() {
             <h1 className="hero-title">
               Frontend engineer
               <br />
-              building <span className="accent">fast, clean</span>
+              specializing in <span className="accent">React, Next.js, and TypeScript.</span>
               <br />
-              web interfaces.
+              Building fast and intuitive web applications.
             </h1>
             <p className="hero-sub">
               I&apos;m Samuel — I design and build responsive web applications with React,
