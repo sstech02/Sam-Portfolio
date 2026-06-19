@@ -11,7 +11,7 @@ export function HeroSection() {
             <h1 className="hero-title">
               Frontend engineer
               <br />
-              building <span className="accent">fast, considered</span>
+              building <span className="accent">fast, clean</span>
               <br />
               web interfaces.
             </h1>
