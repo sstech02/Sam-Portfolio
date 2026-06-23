@@ -3,6 +3,7 @@ import NetflixClone from '../assets/NetlixClone.png'
 import Summarist from '../assets/SaminternshipV2.png'
 import Skinstric from '../assets/SkinstricAI.png'
 import Ultraverse from '../assets/Ultraverse.png'
+import KitchenReady from '../assets/KitchenReady.png'
 
 export const stack: StackItem[] = [
   { name: 'React', cat: 'library', icon: 'Rx' },
@@ -82,9 +83,9 @@ export const projects: Project[] = [
     cat: 'frontend',
     desc: 'Side project from my day job: a small ops tool concept for kitchen prep checklists and CSS-first layout exploration.',
     tags: ['HTML', 'CSS'],
-    url: 'Input URL here',
+    url: 'https://kitchen-ready.vercel.app/',
     bg: 'l6',
-    image: Skinstric.src,
+    image: KitchenReady.src,
   },
 ]
 
