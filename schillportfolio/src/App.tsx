@@ -5,6 +5,7 @@ import { AboutSection } from './components/AboutSection'
 import { ContactSection } from './components/ContactSection'
 import { HeroSection } from './components/HeroSection'
 import { NavBar } from './components/NavBar'
+import { OrbCursor } from './components/OrbCursor'
 import { ProjectsSection } from './components/ProjectsSection'
 import { SiteFooter } from './components/SiteFooter'
 import { StackSection } from './components/StackSection'
@@ -42,7 +43,14 @@ function App() {
 
   return (
     <>
+      <OrbCursor />
       <div className="bg-grid" />
+      <div className="space-nebula" aria-hidden="true" />
+      <div className="space-stars" aria-hidden="true" />
+      <div className="space-planets" aria-hidden="true">
+        <span className="space-planet space-planet--one" />
+        <span className="space-planet space-planet--two" />
+      </div>
 
       <NavBar onToggleTheme={() => setTheme(theme === 'light' ? 'dark' : 'light')} />
       <HeroSection />

@@ -1,6 +1,179 @@
+import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+
+const terminalLines = [
+  { kind: 'command', text: 'whoami --json' },
+  { kind: 'output', text: '{' },
+  { kind: 'output', text: '  "name": "Samuel Schill",' },
+  { kind: 'output', text: '  "role": "Frontend Developer",' },
+  { kind: 'output', text: '  "stack": ["React", "Next.js", "TS"],' },
+  { kind: 'output', text: '  "learning": "Full-stack + AI",' },
+  { kind: 'output', text: '  "shipped": 102 /* commits, 12mo */' },
+  { kind: 'output', text: '}' },
+] as const
+
+const scrambleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@!*&%'
+
+function randomChar() {
+  return scrambleChars[Math.floor(Math.random() * scrambleChars.length)]
+}
+
 export function HeroSection() {
+  const terminalRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (!terminalRef.current) {
+      return
+    }
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const cleanupFns: Array<() => void> = []
+
+    const ctx = gsap.context(() => {
+      const lineRows = gsap.utils.toArray<HTMLElement>('[data-term-line]')
+      const finalPrompt = gsap.utils.toArray<HTMLElement>('[data-term-final]')
+
+      const splitLineToChars = (textEl: HTMLElement) => {
+        const source = textEl.dataset.fullText ?? textEl.textContent ?? ''
+        const frag = document.createDocumentFragment()
+
+        for (const letter of source) {
+          const span = document.createElement('span')
+          span.className = 'term-char'
+          span.dataset.content = letter
+          span.textContent = letter
+          frag.appendChild(span)
+        }
+
+        textEl.textContent = ''
+        textEl.appendChild(frag)
+      }
+
+      const scrambleOne = (charEl: HTMLElement) => {
+        if (charEl.dataset.scrambling === '1') {
+          return
+        }
+
+        const original = charEl.dataset.content ?? charEl.textContent ?? ''
+        if (original.trim().length === 0) {
+          return
+        }
+
+        charEl.dataset.scrambling = '1'
+        charEl.classList.add('is-scrambling')
+
+        const state = { frame: 0 }
+        const totalFrames = 7
+
+        gsap.to(state, {
+          frame: totalFrames,
+          duration: 0.32,
+          ease: 'none',
+          onStart: () => {
+            gsap.to(charEl, { y: -2, color: 'var(--accent)', duration: 0.14, overwrite: true })
+          },
+          onUpdate: () => {
+            charEl.textContent = randomChar()
+          },
+          onComplete: () => {
+            charEl.textContent = original
+            charEl.dataset.scrambling = '0'
+            charEl.classList.remove('is-scrambling')
+            gsap.to(charEl, { y: 0, color: 'inherit', duration: 0.18, overwrite: true })
+          },
+        })
+      }
+
+      const bindPointerScramble = () => {
+        const terminal = terminalRef.current
+        if (!terminal) {
+          return
+        }
+
+        const onMove = (e: PointerEvent) => {
+          const chars = terminal.querySelectorAll<HTMLElement>('.term-char')
+          chars.forEach((charEl) => {
+            const rect = charEl.getBoundingClientRect()
+            const cx = rect.left + rect.width / 2
+            const cy = rect.top + rect.height / 2
+            const dx = e.clientX - cx
+            const dy = e.clientY - cy
+            const dist = Math.hypot(dx, dy)
+
+            if (dist < 85 && Math.random() > 0.65) {
+              scrambleOne(charEl)
+            }
+          })
+        }
+
+        terminal.addEventListener('pointermove', onMove)
+        cleanupFns.push(() => terminal.removeEventListener('pointermove', onMove))
+      }
+
+      if (reduceMotion) {
+        lineRows.forEach((line) => {
+          const textEl = line.querySelector<HTMLElement>('[data-term-text]')
+          const fullText = textEl?.dataset.fullText ?? ''
+          if (textEl) {
+            textEl.textContent = fullText
+            splitLineToChars(textEl)
+          }
+          gsap.set(line, { autoAlpha: 1, y: 0 })
+        })
+        gsap.set(finalPrompt, { autoAlpha: 1, y: 0 })
+        bindPointerScramble()
+        return
+      }
+
+      gsap.set(lineRows, { autoAlpha: 0, y: 8 })
+      gsap.set(finalPrompt, { autoAlpha: 0, y: 8 })
+
+      const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
+
+      lineRows.forEach((line) => {
+        const textEl = line.querySelector<HTMLElement>('[data-term-text]')
+        if (!textEl) {
+          return
+        }
+
+        const fullText = textEl.dataset.fullText ?? ''
+        textEl.textContent = ''
+
+        tl.to(line, { autoAlpha: 1, y: 0, duration: 0.16 })
+
+        const chars = { count: 0 }
+        tl.to(chars, {
+          count: fullText.length,
+          duration: Math.max(0.25, fullText.length * 0.024),
+          ease: 'none',
+          onUpdate: () => {
+            textEl.textContent = fullText.slice(0, Math.floor(chars.count))
+          },
+          onComplete: () => {
+            splitLineToChars(textEl)
+          },
+        })
+      })
+
+      tl.to(finalPrompt, { autoAlpha: 1, y: 0, duration: 0.2 }, '>-0.02')
+      tl.call(() => {
+        bindPointerScramble()
+      })
+    }, terminalRef)
+
+    return () => {
+      cleanupFns.forEach((fn) => fn())
+      ctx.revert()
+    }
+  }, [])
+
   return (
     <header className="hero" id="top">
+      <div className="hero-starfield" aria-hidden="true">
+        <span className="hero-stars hero-stars--small" />
+        <span className="hero-stars hero-stars--medium" />
+        <span className="hero-stars hero-stars--large" />
+      </div>
       <div className="wrap">
         <div className="status-pill">
           <span className="dot" />
@@ -72,7 +245,7 @@ export function HeroSection() {
             </div>
           </div>
 
-          <div className="terminal" aria-hidden="true">
+          <div className="terminal" aria-hidden="true" ref={terminalRef}>
             <div className="term-head">
               <span className="term-dot r" />
               <span className="term-dot y" />
@@ -80,29 +253,21 @@ export function HeroSection() {
               <span className="term-title">~/samuel-schill — zsh</span>
             </div>
             <div className="term-body">
-              <div className="term-line">
-                <span className="term-prompt">$</span>
-                <span className="term-cmd">whoami --json</span>
-              </div>
-              <div className="term-out">{'{'}</div>
-              <div className="term-out">
-                {'  '}<span className="k">&quot;name&quot;</span>: <span className="s">&quot;Samuel Schill&quot;</span>,
-              </div>
-              <div className="term-out">
-                {'  '}<span className="k">&quot;role&quot;</span>: <span className="s">&quot;Frontend Developer&quot;</span>,
-              </div>
-              <div className="term-out">
-                {'  '}<span className="k">&quot;stack&quot;</span>: [<span className="s">&quot;React&quot;</span>, <span className="s">&quot;Next.js&quot;</span>, <span className="s">&quot;TS&quot;</span>],
-              </div>
-              <div className="term-out">
-                {'  '}<span className="k">&quot;learning&quot;</span>: <span className="s">&quot;Full-stack + AI&quot;</span>,
-              </div>
-              <div className="term-out">
-                {'  '}<span className="k">&quot;shipped&quot;</span>: <span className="n">102</span>{' '}
-                <span className="term-note">/* commits, 12mo */</span>
-              </div>
-              <div className="term-out">{'}'}</div>
-              <div className="term-line term-line--last">
+              {terminalLines.map((line, idx) => (
+                <div
+                  key={`${line.kind}-${idx}`}
+                  className={`term-line ${line.kind === 'output' ? 'term-line--output' : ''}`}
+                  data-term-line
+                >
+                  {line.kind === 'command' ? <span className="term-prompt">$</span> : null}
+                  <span
+                    className={line.kind === 'command' ? 'term-cmd term-type' : 'term-out term-type'}
+                    data-term-text
+                    data-full-text={line.text}
+                  />
+                </div>
+              ))}
+              <div className="term-line term-line--last" data-term-final>
                 <span className="term-prompt">$</span>
                 <span className="term-cmd">
                   _ <span className="cursor" />

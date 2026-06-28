@@ -4,14 +4,19 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "clean": "node -e \"const fs=require('node:fs'); fs.rmSync('.next', { recursive: true, force: true, maxRetries: 10, retryDelay: 150 });\"",
     "dev": "next dev",
+    "dev:clean": "npm run clean && next dev",
     "build": "next build",
+    "rebuild": "npm run clean && next build",
     "start": "next start",
     "lint": "eslint .",
     "preview": "next start"
   },
   "dependencies": {
     "@formspree/react": "^3.0.0",
+    "aos": "^2.3.4",
+    "gsap": "^3.15.0",
     "jquery": "^3.7.1",
     "keen-slider": "^6.8.6",
     "next": "^15.5.6",
@@ -21,6 +26,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@types/aos": "^3.0.8",
     "@types/jquery": "^4.0.1",
     "@types/node": "^24.12.3",
     "@types/react": "^19.2.14",

@@ -1,19 +1,19 @@
 :root {
-  --bg: #ffffff;
-  --bg-soft: #f6f7f9;
-  --bg-elev: #ffffff;
-  --line: #e7e8ec;
-  --line-soft: #eef0f3;
-  --ink: #0b0d12;
-  --ink-2: #2a2f3a;
-  --muted: #5b6473;
-  --muted-2: #8b94a3;
-  --accent: #4f46e5;
-  --accent-2: #7c3aed;
-  --accent-soft: #eef2ff;
+  --bg: #080f1f;
+  --bg-soft: #0d182d;
+  --bg-elev: #101d33;
+  --line: #1d304f;
+  --line-soft: #152843;
+  --ink: #e7eefc;
+  --ink-2: #c8d6ef;
+  --muted: #9fb1cf;
+  --muted-2: #7488a8;
+  --accent: #22d3ee;
+  --accent-2: #60a5fa;
+  --accent-soft: #0f3046;
   --green: #16a34a;
-  --grid: rgba(15, 23, 42, 0.045);
-  --shadow: 0 1px 0 rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.08);
+  --grid: rgba(173, 205, 255, 0.09);
+  --shadow: 0 1px 0 rgba(4, 10, 20, 0.5), 0 14px 36px -18px rgba(2, 7, 18, 0.8);
   --radius: 12px;
   --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
   --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -74,6 +74,64 @@ textarea {
 ::selection {
   background: var(--accent);
   color: #ffffff;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html.cursor-active,
+  html.cursor-active body,
+  html.cursor-active * {
+    cursor: none !important;
+  }
+}
+
+.orb-cursor,
+.orb-cursor__core {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.orb-cursor {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0) 28%),
+    radial-gradient(circle at center, rgba(168, 85, 247, 0.3) 0%, rgba(124, 58, 237, 0.22) 42%, rgba(124, 58, 237, 0.12) 68%, rgba(124, 58, 237, 0) 100%);
+  border: 1px solid rgba(196, 132, 252, 0.52);
+  box-shadow:
+    0 0 0 1px rgba(91, 33, 182, 0.08),
+    0 12px 34px -18px rgba(124, 58, 237, 0.72),
+    0 0 36px rgba(168, 85, 247, 0.22);
+  backdrop-filter: blur(10px);
+}
+
+.orb-cursor::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  opacity: 0.8;
+}
+
+.orb-cursor__core {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #c084fc;
+  box-shadow: 0 0 20px rgba(192, 132, 252, 0.65);
+}
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .orb-cursor,
+  .orb-cursor__core {
+    display: none;
+  }
 }
 
 #root {

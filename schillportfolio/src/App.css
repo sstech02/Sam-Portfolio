@@ -1,13 +1,231 @@
 .bg-grid {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: -3;
   pointer-events: none;
   background-image:
     linear-gradient(var(--grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 30%, transparent 80%);
+  background-size: 72px 72px;
+  opacity: 0.34;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 4%, black 20%, transparent 85%);
+}
+
+.space-nebula,
+.space-stars,
+.space-planets {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.space-nebula {
+  z-index: -5;
+  background:
+    radial-gradient(58% 46% at 16% 22%, color-mix(in oklab, var(--accent) 24%, transparent), transparent 72%),
+    radial-gradient(42% 32% at 82% 18%, color-mix(in oklab, var(--accent-2) 20%, transparent), transparent 76%),
+    radial-gradient(50% 44% at 50% 78%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 74%),
+    linear-gradient(180deg, color-mix(in oklab, var(--bg) 84%, #01040e 16%), var(--bg));
+  filter: saturate(110%);
+}
+
+.space-stars {
+  z-index: -4;
+  opacity: 0.6;
+  background-image:
+    radial-gradient(1px 1px at 10% 18%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1.2px 1.2px at 24% 76%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 37% 42%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1.3px 1.3px at 48% 86%, rgba(255, 255, 255, 0.85), transparent),
+    radial-gradient(1px 1px at 59% 22%, rgba(255, 255, 255, 0.72), transparent),
+    radial-gradient(1px 1px at 71% 64%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1.1px 1.1px at 82% 34%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1px 1px at 93% 72%, rgba(255, 255, 255, 0.68), transparent);
+  animation: star-drift 18s linear infinite alternate;
+}
+
+.space-stars::before,
+.space-stars::after {
+  content: '';
+  position: absolute;
+  width: clamp(120px, 16vw, 240px);
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0));
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.34));
+  opacity: 0;
+}
+
+.space-stars::before {
+  top: 20%;
+  left: -18%;
+  transform: rotate(-18deg);
+  animation: shooting-star 11.5s linear infinite;
+}
+
+.space-stars::after {
+  top: 58%;
+  left: -22%;
+  transform: rotate(-14deg);
+  animation: shooting-star 15.5s linear infinite 4.2s;
+}
+
+.space-planets {
+  z-index: -4;
+  overflow: hidden;
+}
+
+.space-planet {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.space-planet--one {
+  width: clamp(120px, 15vw, 210px);
+  aspect-ratio: 1;
+  right: clamp(16px, 6vw, 88px);
+  top: clamp(64px, 8vw, 130px);
+  background:
+    radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 34%),
+    radial-gradient(circle at 62% 72%, rgba(15, 23, 42, 0.72), rgba(15, 23, 42, 0) 56%),
+    linear-gradient(150deg, color-mix(in oklab, var(--accent) 66%, #071021), color-mix(in oklab, var(--accent-2) 34%, #01040e));
+  box-shadow:
+    inset -18px -12px 28px rgba(5, 10, 22, 0.52),
+    0 0 54px color-mix(in oklab, var(--accent) 24%, transparent);
+  opacity: 0.72;
+  animation: planet-drift-one 24s ease-in-out infinite;
+}
+
+.space-planet--one::before {
+  content: '';
+  position: absolute;
+  inset: -22% -28%;
+  border-radius: 50%;
+  background:
+    repeating-linear-gradient(
+      112deg,
+      rgba(255, 255, 255, 0.12) 0 8px,
+      rgba(255, 255, 255, 0) 8px 16px
+    ),
+    radial-gradient(circle at 54% 44%, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 60%);
+  mix-blend-mode: screen;
+  opacity: 0.52;
+  animation: planet-rotate-one 30s linear infinite;
+}
+
+.space-planet--one::after {
+  content: '';
+  position: absolute;
+  inset: 44% -24% auto;
+  height: 18%;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, #dbeafe 34%, transparent);
+  background: color-mix(in oklab, var(--accent) 14%, transparent);
+  transform: rotate(-12deg);
+  opacity: 0.72;
+}
+
+.space-planet--two {
+  width: clamp(70px, 9vw, 120px);
+  aspect-ratio: 1;
+  left: clamp(18px, 4vw, 70px);
+  bottom: clamp(80px, 11vw, 160px);
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0) 38%),
+    linear-gradient(145deg, color-mix(in oklab, var(--accent-2) 52%, #070b18), color-mix(in oklab, var(--accent) 32%, #01040d));
+  box-shadow:
+    inset -10px -8px 20px rgba(3, 6, 16, 0.56),
+    0 0 34px color-mix(in oklab, var(--accent-2) 26%, transparent);
+  opacity: 0.62;
+  animation: planet-drift-two 28s ease-in-out infinite;
+}
+
+.space-planet--two::before {
+  content: '';
+  position: absolute;
+  inset: 6% 8%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 26% 38%, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 22%),
+    radial-gradient(circle at 64% 58%, rgba(2, 6, 23, 0.38), rgba(2, 6, 23, 0) 26%),
+    radial-gradient(circle at 44% 76%, rgba(2, 6, 23, 0.35), rgba(2, 6, 23, 0) 24%);
+  opacity: 0.62;
+}
+
+.space-planet--two::after {
+  content: '';
+  position: absolute;
+  inset: -16%;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, #dbeafe 20%, transparent);
+  opacity: 0.4;
+  filter: blur(0.2px);
+}
+
+@keyframes star-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-10px, -12px, 0);
+  }
+}
+
+@keyframes planet-drift-one {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(-10px, -8px, 0);
+  }
+}
+
+@keyframes planet-rotate-one {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes planet-drift-two {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(8px, -10px, 0);
+  }
+}
+
+@keyframes shooting-star {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(-16deg) scaleX(0.65);
+  }
+
+  10% {
+    opacity: 0.92;
+  }
+
+  32% {
+    opacity: 0;
+    transform: translate3d(125vw, -26vh, 0) rotate(-16deg) scaleX(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(125vw, -26vh, 0) rotate(-16deg) scaleX(1);
+  }
 }
 
 .wrap {
@@ -125,8 +343,145 @@
 
 .hero {
   padding: 80px 0 60px;
-  border-bottom: 1px solid var(--line);
   position: relative;
+  border-bottom: none;
+  isolation: isolate;
+  overflow: clip;
+}
+
+.hero::before,
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hero::before {
+  z-index: -3;
+  background:
+    radial-gradient(60% 55% at 6% 16%, color-mix(in oklab, var(--accent-2) 26%, transparent), transparent 68%),
+    radial-gradient(45% 40% at 86% 24%, color-mix(in oklab, var(--accent) 30%, transparent), transparent 74%),
+    radial-gradient(56% 62% at 52% 96%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 72%),
+    linear-gradient(180deg, color-mix(in oklab, var(--bg) 64%, #030712 36%) 0%, color-mix(in oklab, var(--bg) 82%, #030712 18%) 100%);
+}
+
+.hero::after {
+  z-index: -2;
+  opacity: 0.52;
+  background:
+    radial-gradient(600px 320px at 50% 0%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 70%),
+    radial-gradient(420px 260px at 82% 10%, color-mix(in oklab, var(--accent-2) 24%, transparent), transparent 72%);
+}
+
+.hero-starfield {
+  position: absolute;
+  inset: -120px 0 -60px;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-stars {
+  position: absolute;
+  inset: 0;
+  background-repeat: repeat;
+  opacity: 0.9;
+  transform: translateZ(0);
+}
+
+.hero-stars--small {
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgba(255, 255, 255, 0.92), transparent),
+    radial-gradient(1px 1px at 28% 62%, rgba(255, 255, 255, 0.82), transparent),
+    radial-gradient(1px 1px at 42% 26%, rgba(255, 255, 255, 0.94), transparent),
+    radial-gradient(1px 1px at 58% 72%, rgba(255, 255, 255, 0.74), transparent),
+    radial-gradient(1px 1px at 74% 42%, rgba(255, 255, 255, 0.86), transparent),
+    radial-gradient(1px 1px at 88% 84%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 8% 72%, rgba(255, 255, 255, 0.78), transparent),
+    radial-gradient(1px 1px at 33% 8%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 64% 54%, rgba(255, 255, 255, 0.76), transparent),
+    radial-gradient(1px 1px at 96% 18%, rgba(255, 255, 255, 0.82), transparent);
+  background-size: 340px 340px;
+  animation: hero-starfield-fly 70s linear infinite;
+}
+
+.hero-stars--medium {
+  background-image:
+    radial-gradient(1.7px 1.7px at 16% 30%, rgba(255, 255, 255, 0.94), transparent),
+    radial-gradient(1.7px 1.7px at 36% 78%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1.7px 1.7px at 54% 20%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1.7px 1.7px at 70% 62%, rgba(255, 255, 255, 0.76), transparent),
+    radial-gradient(1.7px 1.7px at 90% 34%, rgba(255, 255, 255, 0.88), transparent),
+    radial-gradient(1.7px 1.7px at 8% 60%, rgba(255, 255, 255, 0.82), transparent),
+    radial-gradient(1.7px 1.7px at 44% 44%, rgba(255, 255, 255, 0.86), transparent);
+  background-size: 520px 520px;
+  opacity: 0.78;
+  animation: hero-starfield-fly 46s linear infinite;
+}
+
+.hero-stars--large {
+  background-image:
+    radial-gradient(2.4px 2.4px at 18% 22%, rgba(255, 255, 255, 0.96), transparent),
+    radial-gradient(2.4px 2.4px at 46% 68%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(2.4px 2.4px at 76% 36%, rgba(255, 255, 255, 0.94), transparent),
+    radial-gradient(2.4px 2.4px at 88% 74%, rgba(255, 255, 255, 0.92), transparent),
+    radial-gradient(2.4px 2.4px at 10% 82%, rgba(255, 255, 255, 0.9), transparent);
+  background-size: 760px 760px;
+  opacity: 0.72;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.24));
+  animation:
+    hero-starfield-fly 28s linear infinite,
+    hero-stars-twinkle 3.6s ease-in-out infinite alternate;
+}
+
+.hero .wrap {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-grid::before {
+  content: '';
+  position: absolute;
+  width: 420px;
+  aspect-ratio: 1;
+  right: -120px;
+  top: -110px;
+  border-radius: 50%;
+  pointer-events: none;
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--accent-2) 14%, transparent),
+    0 0 80px color-mix(in oklab, var(--accent-2) 22%, transparent);
+  opacity: 0.65;
+  z-index: -1;
+}
+
+@keyframes hero-starfield-fly {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-160px, -240px, 0);
+  }
+}
+
+@keyframes hero-stars-twinkle {
+  0% {
+    opacity: 0.56;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.18));
+  }
+
+  50% {
+    opacity: 0.82;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.32));
+  }
+
+  100% {
+    opacity: 0.68;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.24));
+  }
 }
 
 .status-pill {
@@ -171,6 +526,7 @@
   grid-template-columns: 1.4fr 1fr;
   gap: 64px;
   align-items: start;
+  position: relative;
 }
 
 .hero-title {
@@ -314,6 +670,10 @@
   line-height: 1.7;
 }
 
+.term-line--output {
+  padding-left: 16px;
+}
+
 .term-line--last {
   margin-top: 10px;
 }
@@ -327,9 +687,21 @@
   color: var(--ink);
 }
 
+.term-type {
+  white-space: pre;
+}
+
+.term-char {
+  display: inline-block;
+  will-change: transform, color;
+}
+
+.term-char.is-scrambling {
+  text-shadow: 0 0 10px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
 .term-out {
   color: var(--muted);
-  padding-left: 16px;
   line-height: 1.6;
 }
 
@@ -375,8 +747,88 @@
 }
 
 section {
+  position: relative;
+  z-index: 0;
   padding: 80px 0;
-  border-bottom: 1px solid var(--line);
+  border-bottom: none;
+  animation: section-float 8.2s ease-in-out infinite;
+}
+
+section + section::before,
+section + section::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+
+section + section::before {
+  top: -34px;
+  height: 72px;
+  z-index: 0;
+  opacity: 0.85;
+  background:
+    radial-gradient(240px 50px at 22% 50%, color-mix(in oklab, var(--accent-2) 16%, transparent), transparent 78%),
+    radial-gradient(260px 56px at 74% 50%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 80%);
+  filter: blur(0.3px);
+}
+
+section + section::after {
+  top: -28px;
+  height: 56px;
+  z-index: 0;
+  opacity: 0.7;
+  background-image:
+    radial-gradient(1px 1px at 8% 36%, rgba(255, 255, 255, 0.84), transparent),
+    radial-gradient(1.2px 1.2px at 18% 74%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 31% 48%, rgba(255, 255, 255, 0.76), transparent),
+    radial-gradient(1.3px 1.3px at 46% 30%, rgba(255, 255, 255, 0.82), transparent),
+    radial-gradient(1px 1px at 57% 78%, rgba(255, 255, 255, 0.66), transparent),
+    radial-gradient(1.2px 1.2px at 69% 44%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 82% 68%, rgba(255, 255, 255, 0.72), transparent),
+    radial-gradient(1.3px 1.3px at 93% 26%, rgba(255, 255, 255, 0.88), transparent);
+  animation: between-stars-drift 24s linear infinite alternate;
+}
+
+section:nth-of-type(even) {
+  animation-duration: 10.1s;
+  animation-delay: -1.4s;
+}
+
+section > .wrap {
+  position: relative;
+  z-index: 1;
+  background: color-mix(in oklab, var(--bg-elev) 74%, transparent);
+  border: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+  border-radius: 20px;
+  padding-top: 34px;
+  padding-bottom: 34px;
+  box-shadow:
+    0 10px 36px -22px rgba(2, 6, 23, 0.7),
+    inset 0 1px 0 color-mix(in srgb, #ffffff 16%, transparent);
+  backdrop-filter: blur(7px);
+}
+
+@keyframes section-float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+@keyframes between-stars-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-16px, -4px, 0);
+  }
 }
 
 .sec-head {
@@ -416,6 +868,12 @@ section {
   max-width: 1080px;
 }
 
+.about-side {
+  display: grid;
+  gap: 20px;
+  border-radius: 100px
+}
+
 .about-lead {
   font-size: 17px;
   color: var(--ink-2);
@@ -431,6 +889,35 @@ section {
 
 .about-copy:last-child {
   margin-bottom: 0;
+}
+
+.about-photo-card {
+  margin: 0;
+  padding: 0 24px 20px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--bg-elev);
+  box-shadow: var(--shadow);
+}
+
+.about-photo {
+  display: block;
+  width: min(320px, 100%);
+  margin: 24px auto 0;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 50% / 38%;
+}
+
+.about-photo-caption {
+  padding: 12px 16px 14px;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.02em;
 }
 
 .focus-card {
@@ -1145,9 +1632,33 @@ section {
     padding: 56px 0;
   }
 
+  section > .wrap {
+    border-radius: 16px;
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+
+  section + section::before {
+    top: -24px;
+    height: 54px;
+  }
+
+  section + section::after {
+    top: -20px;
+    height: 42px;
+  }
+
   .site-footer-inner {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .space-planet--one {
+    opacity: 0.5;
+  }
+
+  .space-planet--two {
+    opacity: 0.46;
   }
 
   .form-actions {
@@ -1158,5 +1669,19 @@ section {
 
   .form-msg {
     margin-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .space-stars,
+  .space-stars::before,
+  .space-stars::after,
+  .space-planet,
+  .space-planet::before,
+  .space-planet::after,
+  .hero-stars,
+  section + section::after,
+  section {
+    animation: none;
   }
 }

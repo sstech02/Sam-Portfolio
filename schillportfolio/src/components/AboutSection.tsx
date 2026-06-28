@@ -1,3 +1,5 @@
+import SamuelProfile from '../assets/SamuelSchillprofilepic.jpg'
+
 export function AboutSection() {
   return (
     <section id="about">
@@ -26,7 +28,18 @@ export function AboutSection() {
               feel one frame snappier.
             </p>
           </div>
-          <div>
+          <div className="about-side">
+            <figure className="about-photo-card">
+              <img
+                src={SamuelProfile.src}
+                alt="Portrait of Samuel Schill"
+                className="about-photo"
+                loading="lazy"
+              />
+              <figcaption className="about-photo-caption">
+                Samuel Schill / frontend developer / Appleton, WI
+              </figcaption>
+            </figure>
             <div className="focus-card">
               <div className="focus-title">CURRENT_FOCUS.md</div>
               <ul className="focus-list">
